@@ -1,0 +1,14 @@
+name: dnametabarcoding
+channels:
+  - bioconda
+  - conga-forge
+dependencies:
+  - python=3.10.0
+  - click=8.1.3
+  - biopython=1.79
+  - cutadapt=4.1
+  - bioconductor-dada2=1.22.0
+  - blast=2.13.0
+  - pandas=1.4.3
+  - r-taxizedb=0.3.0
+  - bioconductor-phyloseq=1.38.0
