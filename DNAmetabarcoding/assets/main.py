@@ -13,10 +13,6 @@ from collections import defaultdict
 import gzip
 import random
 
-# set temporary	directory for intermediate files
-#TMP = f'/gpfs_common/share02/test2/jrabasc/tmp/dnametabarcoding/seq_2/16S'
-#os.makedirs(TMP, exist_ok=True)
-
 # set blast filtering thresholds
 EVALUE = 0.001
 IDENTITY = 95
@@ -28,7 +24,6 @@ ranks = ['superkingdom', 'kingdom', 'phylum', 'class', 'order', 'family', 'genus
 # get username for determining file paths
 user = os.environ['USER']
 
-
 # set dada2 taxonomy database paths to include all fasta files
 # in the dada2_taxonomy directory, keyed by the filename
 base_dada2_tax = f'/usr/local/usrapps/trnL_blast/dada2_taxonomy'
@@ -38,7 +33,7 @@ dada2_tax_dbs = {
 }
 
 
-#removed X's to indicate that primers could be anywhere in seqeunce
+#removed X's to indicate that primers could be anywhere in sequence
 
 def run_dada2(input, output, feat_table, rep_seqs, cutoff, TMP):
     """Run DADA2 on the input sequence reads to identify ASVs.
@@ -46,7 +41,10 @@ def run_dada2(input, output, feat_table, rep_seqs, cutoff, TMP):
     Arguments:
     input -- the fastq file of sequencing reads
     output -- the file path for the DADA2 results
-    tempdir -- directory for temporary, intermediate files
+    feat_table -- the file path for the feature table to be turned into a Qiime
+    rep_seqs -- the file oath for the representative sequences from DADA2 output to be turned into a Qiime object
+    Cutoff -- variable that determines the length that reads are truncated at via the DAAD2 processes, reads shorter than the cutoff are truncated.
+    TMP -- directory for temporary, intermediate files
 
     Returns:
     a dataframe of ASVs with the columns: index, sequence, and abundance
@@ -270,10 +268,12 @@ def combine_blast_taxize(blast_data, taxa):
 
 
 def main(input, output, temp_folder, taxmethod, taxreference, blastdatabase, threads, cutoff, unique_run_id):
+
+    #makes TMP folder if it does not exist
     TMP = temp_folder
     os.makedirs(TMP, exist_ok=True)
 
-    # set input file base name and get output directory
+    # set file names and conventions
     base = os.path.basename(input).replace('.gz', '').replace('.fastq', '')
     trunc_base_arr = base.split('_')
     trun_base = str(trunc_base_arr[0]) + '_' + str(trunc_base_arr[1]) + '_' + str(trunc_base_arr[2])
@@ -286,6 +286,7 @@ def main(input, output, temp_folder, taxmethod, taxreference, blastdatabase, thr
     rep_seqs = f'{TMP}/{base}_' + unique_run_id + '_rep-seqs.fna'
     asv_data = run_dada2(input, asv, feat_table, rep_seqs, cutoff, TMP)
 
+    #checks to see if asv table is generated and is not empty
     if((os.path.isfile(asv) == True) and (len(asv_data) > 0)):
 
         #file wraggling for qiime input
@@ -302,8 +303,7 @@ def main(input, output, temp_folder, taxmethod, taxreference, blastdatabase, thr
         cmd_table_qiime_import = 'qiime tools import --input-path ' + str(table_biom_format) + " --type 'FeatureTable[Frequency]' --input-format BIOMV210Format --output-path " + str(table_qza_address)
         subprocess.check_call(cmd_table_qiime_import, shell=True)
                 
-        # taxonomic classification
-        # via blast
+        # taxonomic classification via blast
         if taxmethod == 'BLAST':
 
             # prep input fasta file for blast
@@ -315,15 +315,20 @@ def main(input, output, temp_folder, taxmethod, taxreference, blastdatabase, thr
             blast_results = f'{TMP}/{base}_' + unique_run_id + '_blast.tsv'
             blast_data = run_blast(asv_fasta, blast_results, blastdatabase, threads)
 
+            #checks to see if blast results exist and are not empty
             if(os.path.isfile(blast_results) == True and (len(blast_data) > 0)):
-                # look up taxa
-                print('Running Taxize ...')
+
+                # look up taxid via blast results
                 taxid_list = f'{TMP}/{base}_' + unique_run_id + '_taxids.csv'
                 blast_data[['staxid']].drop_duplicates().to_csv(taxid_list, header=False, index=False)
                 taxize_results = f'{TMP}/{base}_' + unique_run_id + '_taxa.csv'
 
+                #checkst to see if the taxid_list was generated appropriately	
                 if(os.path.isfile(taxid_list) == True):
+                    print('Running Taxize ...')
                     taxa = run_taxize(taxid_list, taxize_results)
+                    
+                    #checks if taxize results were generated and are not empty
                     if((os.path.isfile(taxize_results) == True) and (len(taxa) > 0)):
                         # join blast and taxonomy information
                         final_taxa = combine_blast_taxize(blast_data, taxa)

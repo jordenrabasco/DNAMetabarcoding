@@ -4,12 +4,16 @@
 conda activate /usr/local/usrapps/trnL_blast/jrabasc/meta_and_qiime
 
 
-# set the input list folder, the primer fasta file, and the output directory
+# set the input folder that has the fastq files that will be run through the pipeline
 set file_dir = /gpfs_common/share02/test2/jrabasc/Workflow/Samples/expanded_barcodes/seqrun2_test/16S
+
+#set output (final output) and temporary (intermediate files) directories for all files
 set outdir = /gpfs_common/share02/test2/jrabasc/experiment_output/seq_2/16S
 set TMP = /gpfs_common/share02/test2/jrabasc/tmp/dnametabarcoding/seq_2/16S
 
+#sets truncLen option for DADA2
 set cutoff = 20
+
 #set runtime options for script
 set threads = 8
 

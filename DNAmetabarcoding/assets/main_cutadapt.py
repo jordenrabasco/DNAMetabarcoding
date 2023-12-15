@@ -33,17 +33,15 @@ dada2_tax_dbs = {
     for file in glob.glob(f'{base_dada2_tax}/*.fasta')
 }
 
-# set temporary	directory for intermediate files
-
-#removed X's to indicate that primers could be anywhere in seqeunce
-
 def run_dada2(input, output, feat_table, rep_seqs, TMP):
     """Run DADA2 on the input sequence reads to identify ASVs.
 
     Arguments:
     input -- the fastq file of sequencing reads
     output -- the file path for the DADA2 results
-    tempdir -- directory for temporary, intermediate files
+    feat_table -- the file path for the feature table to be turned into a Qiime
+    rep_seqs -- the file oath for the representative sequences from DADA2 output to be turned into a Qiime object
+    TMP -- directory for temporary, intermediate files
 
     Returns:
     a dataframe of ASVs with the columns: index, sequence, and abundance
@@ -268,6 +266,11 @@ def parse_primers(input_fw, input_rev, fwd, rev):
 
 
 def total_reads(fastq_dest):
+    """Counts the total reads in a fastq file
+
+    Arguments:
+    fastq_dest-- a fasta file containing reads
+    """
     fastq = fastq_dest
     with open(fastq, 'r') as f:
         reads = []
@@ -277,20 +280,19 @@ def total_reads(fastq_dest):
 
 def trim_primers(input, trimmed, primerless, tooshort, prim_primers,  sec_primer, output_namer, cutoff, prim_three_or_five_primer):
     """Trim primer sequences from the sequencing reads.
-    The reads without a primer at the start of the read are excluded and
-    output to a separate file. The reads that are too short (less than 50
+    The reads without a primer are excluded and output to a separate file. The reads that are too short (less than 50
     bases) after trimming are also excluded and output to a separate file.
 
     Arguments:
     input -- the fastq file containing the sequencing reads
-    output -- the file path for the trimmed reads
+    trimmed -- the file path for the trimmed reads
     primerless -- the file path for the reads that do not have a primer
     tooshort -- the file path for the reads that are too short after trimming
-    forwardprimers -- the file path for the forward primers, to be removed
-      from the 5' end of the reads
-    reverseprimers -- the file path for the reverse complement primers, to be
-      removed from the 3' end of the reads
-    samplename -- the name for the sample, to be used in naming files
+    prim_primers -- 
+    sec_primer -- 
+    output_namer -- 
+    cutoff -- 
+    prim_three_or_five_primer -- 
     """
     prim_primer_call = str(prim_primers)
     sec_primer_call = str(sec_primer)

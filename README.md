@@ -2,7 +2,7 @@
 
 Pipeline for Amplicon Sequence Variant (ASV) resolution from microbial community fastq-formatted data. 
 
-This Pipeline expects fastq data and outputs a comprhensive .csv file with taxonomic and abundance information for each ASV, as well as various Qiime objects needed for downstream processing in the Qiime platform.
+This Pipeline expects demulitplexed fastq data and outputs a comprhensive .csv file with taxonomic and abundance information for each ASV, as well as various Qiime objects needed for downstream processing in the Qiime platform.
 
 This pipeline is based on the DNAmetabarcoding workflow developed by Jessica Parks and Jonathan Fleming and can be found here:
 https://github.com/jessicaparks/DNAmetabarcoding.git
@@ -64,7 +64,7 @@ WARNING: to use this method you will need to know the location of the primers wi
 
 ### Pipeline Structure
 The main processing script for the pipeline is either `main.py` or `main_cutadapt.py`. Both scripts are dependent on functions from the scripts `dada2.R`, `dada2_taxonomy.R`, and `taxizedb.R`. The only difference between these two scripts is that one utilizes cutadapt for primer trimming and the other utilizes DADA2 processes. These main processing scripts will analyze a single fastq file. A job submission script `submit_main.csh`, allows to user to run `main.py` on all files within a directory, and submit those jobs to a cluster running a IBM Spectrum LSF system. 
-<img src="assets/pipeline_workflow.pdf">
+<img src="readme_assets/pipeline_workflow.png">
 
 
 ### Primer trimming: cutadapt

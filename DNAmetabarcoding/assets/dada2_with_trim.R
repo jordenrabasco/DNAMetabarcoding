@@ -65,7 +65,10 @@ df <- t(seqtab.nochim)
 df <- cbind(rownames(df), data.frame(df, row.names=NULL))
 names(df) <- c('sequence', 'abundance')
 dir.create(dirname(output), showWarnings=FALSE, recursive=TRUE)
+#writes DAAD2 ASV table to tmp directory
 write.csv(df, output)
+#saves feature table to tmp directory
 write.table(t(seqtab.nochim), feat_table_output, sep="\t", row.names=TRUE, col.names=NA, quote=FALSE)
+#saves rep_seqs table to tmp directory
 uniquesToFasta(seqtab.nochim, fout=rep_seqs_output, ids=colnames(seqtab.nochim))
 }
