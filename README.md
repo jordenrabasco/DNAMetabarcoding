@@ -25,7 +25,7 @@ https://github.com/jessicaparks/DNAmetabarcoding.git
 ## Installation
 To install the pipeline on your local computer or server use the command listed here provided that git is installed. 
 ```bash
-git clone 
+git clone https://github.com/jordenrabasco/DNAMetabarcoding.git
 ```
 This will download the code to a directory named `DNAmetabarcoding`. After downloading the code run the following command from within the folder. This will make a conda environment with the appropriate packages. 
 ```bash
@@ -63,7 +63,8 @@ The DNAmetabarcoding pipeline has three major steps those being primer identific
 WARNING: to use this method you will need to know the location of the primers within your reads. 
 
 ### Pipeline Structure
-The main processing script for the pipeline is either `main.py` or `main_cutadapt.py`. Both scripts are dependent on functions from the scripts `dada2.R`, `dada2_taxonomy.R`, and `taxizedb.R`. The only difference between these two scripts is that one utilizes cutadapt for primer trimming and the other utilizes DADA2 processes. These main processing scripts will analyze a single fastq file. A job submission script `submit_main.csh`, allows to user to run `main.py` on all files within a directory, and submit those jobs to a cluster running a IBM Spectrum LSF system. 
+The main processing script for the pipeline is either `main.py` or `main_cutadapt.py`. Both scripts are dependent on functions from the scripts `dada2.R`, `dada2_taxonomy.R`, and `taxizedb.R`. The only difference between these two scripts is that one utilizes cutadapt for primer trimming and the other utilizes DADA2 processes. These main processing scripts will analyze a single fastq file. A job submission script `submit_main.csh`, allows to user to run `main.py` on all files within a directory, and submit those jobs to a cluster running a IBM Spectrum LSF system.
+
 <img src="readme_assets/pipeline_workflow.png">
 
 
